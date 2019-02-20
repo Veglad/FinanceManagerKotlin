@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mainContentCoordinator"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/appbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:fitsSystemWindows="true"
+        app:theme="@style/ThemeOverlay.AppCompat"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        android:background="@color/primary"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fitsSystemWindows="true"
+            android:orientation="horizontal"
+            app:layout_scrollFlags="scroll">
+
+            <Spinner
+                android:id="@+id/periodsSpinner"
+                android:layout_width="wrap_content"
+                android:layout_height="32dp"
+                android:paddingEnd="16dp"
+                android:dropDownSelector="@color/white"
+                app:layout_constraintBottom_toBottomOf="@+id/accountsSpinner"
+
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/accountsSpinner"
+                app:layout_constraintTop_toTopOf="@+id/accountsSpinner" />
+
+            <Spinner
+                android:id="@+id/accountsSpinner"
+                android:layout_width="wrap_content"
+                android:layout_height="32dp"
+                android:paddingEnd="16dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/periodsSpinner"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </android.support.constraint.ConstraintLayout>
+    </android.support.v7.widget.Toolbar>
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/pieChartViewPager"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginBottom="8dp"
+        android:fitsSystemWindows="true"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        app:layout_constraintBottom_toTopOf="@id/bottomNavigation"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/appbar"
+        app:layout_constraintVertical_weight="1"
+        app:layout_scrollFlags="scroll" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/newOperationButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|right"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:src="@drawable/ic_add_white_48dp"
+        android:onClick="onNewOperationButtonClick"
+        app:layout_constraintBottom_toTopOf="@+id/bottomNavigation"
+        app:layout_constraintEnd_toEndOf="@+id/pieChartViewPager" />
+
+    <android.support.design.widget.BottomNavigationView
+        android:id="@+id/bottomNavigation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_margin="0dp"
+        android:background="@color/primary"
+        app:itemBackground="@drawable/bottom_nav_foreground_selector"
+        app:itemIconTint="@color/bottom_nav_item_selector"
+        app:itemTextColor="@color/bottom_nav_item_selector"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:menu="@menu/bottom_navigation_menu" />
+</android.support.constraint.ConstraintLayout>
+
+

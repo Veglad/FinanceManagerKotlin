@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingBottom="28dp">
+
+    <Button
+        android:id="@+id/leftButton"
+        style="?android:attr/borderlessButtonStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/ic_keyboard_arrow_left_primary_48dp"
+        android:onClick="buttonLeftClick"
+        app:layout_constraintBottom_toTopOf="@+id/incomeButton"
+        app:layout_constraintEnd_toStartOf="@+id/balanceTextView"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/balanceTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        tools:text="Balance: 34200"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="@+id/leftButton"
+        app:layout_constraintEnd_toStartOf="@+id/rightButton"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/leftButton"
+        app:layout_constraintTop_toTopOf="@+id/leftButton" />
+
+    <Button
+        android:id="@+id/rightButton"
+        style="?android:attr/borderlessButtonStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/ic_keyboard_arrow_right_primary_48dp"
+        android:onClick="buttonRightClick"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/balanceTextView"
+        app:layout_constraintTop_toTopOf="@+id/leftButton" />
+
+
+    <Button
+        android:id="@+id/outcomeButton"
+        style="?android:attr/borderlessButtonStyle"
+        android:layout_width="0dp"
+        android:layout_height="70dp"
+        android:layout_marginEnd="8dp"
+        android:layout_weight="1"
+        android:background="@drawable/btn_outcome_shape"
+        android:text="@string/outcome"
+        android:textColor="@color/lite_red"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="@+id/incomeButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/incomeButton" />
+
+    <Button
+        android:id="@+id/incomeButton"
+        style="?android:attr/borderlessButtonStyle"
+        android:layout_width="0dp"
+        android:layout_height="70dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:layout_weight="1"
+        android:background="@drawable/btn_income_shape"
+        android:text="@string/income"
+        android:textColor="@color/lite_green"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/outcomeButton"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent" />
+
+
+</android.support.constraint.ConstraintLayout>
