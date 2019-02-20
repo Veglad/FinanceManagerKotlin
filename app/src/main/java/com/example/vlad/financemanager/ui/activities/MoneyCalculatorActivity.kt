@@ -1,6 +1,7 @@
 package com.example.vlad.financemanager.ui.activities
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.app.DatePickerDialog
 import android.content.Intent
 import android.graphics.Color
@@ -95,7 +96,7 @@ class MoneyCalculatorActivity : AppCompatActivity(), IMoneyCalculation,
             }
         })
 
-        closeOperationButton.setOnClickListener { finishActivity() }
+        closeOperationButton.setOnClickListener { closeActivity() }
         saveRecordButton.setOnClickListener { presenter.onButtonSaveClick() }
         calculatorBackButton.setOnClickListener {
             val pressedButton = it as ImageButton
@@ -115,6 +116,14 @@ class MoneyCalculatorActivity : AppCompatActivity(), IMoneyCalculation,
         }
     }
 
+    override fun onBackPressed() {
+        closeActivity()
+    }
+
+    private fun closeActivity() {
+        setResult(Activity.RESULT_CANCELED)
+        finish()
+    }
 
     private fun initSpinnersItemLists(userId: Int) {
         val accountList = databaseHelper.getAllAccounts(userId)

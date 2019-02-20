@@ -1,6 +1,7 @@
 package com.example.vlad.financemanager.ui.activities
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Intent
 import android.graphics.PorterDuff
 import android.support.v7.app.AppCompatActivity
@@ -185,6 +186,7 @@ class MainActivity : AppCompatActivity(), OnChangeOperationClickListener {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if(resultCode == Activity.RESULT_CANCELED) return
         if (data == null || resultCode != 0 || data.extras == null) {
             Toast.makeText(this, getString(R.string.operation_save_error), Toast.LENGTH_SHORT).show()
             return
