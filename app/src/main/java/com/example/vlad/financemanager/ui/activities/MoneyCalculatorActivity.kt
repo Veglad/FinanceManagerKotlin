@@ -18,7 +18,6 @@ import android.widget.DatePicker
 import android.widget.ImageButton
 import android.widget.Spinner
 import android.widget.Toast
-import butterknife.OnClick
 
 import com.example.vlad.financemanager.data.database.DatabaseHelper
 import com.example.vlad.financemanager.data.mappers.SpinnerItemMapper
@@ -235,14 +234,14 @@ class MoneyCalculatorActivity : AppCompatActivity(), IMoneyCalculation,
             val operation = initOperationFromExtras(extras)
             operation.operationDate = Date(extras.getLong(DATE_KEY))
             presenter.initUiViaOperationValues(operation)
-        } else {
-            primaryUiInit()
         }
+
+        dateTimePickerInit(Date(extras.getLong(DATE_KEY)))
     }
 
-    private fun primaryUiInit() {
-        initDateTimePicker(Date())
-        val dateButtonTitle = getDateButtonTitleByDate(Date().time)
+    private fun dateTimePickerInit(date: Date) {
+        initDateTimePicker(date)
+        val dateButtonTitle = getDateButtonTitleByDate(date.time)
         operationDateButton.text = dateButtonTitle
     }
 

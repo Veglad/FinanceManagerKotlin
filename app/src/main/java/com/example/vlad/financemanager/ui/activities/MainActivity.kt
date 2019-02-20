@@ -48,8 +48,6 @@ class MainActivity : AppCompatActivity(), OnChangeOperationClickListener {
         const val USER_ID = 0
     }
 
-    private var endOfPeriod: Calendar
-
     private lateinit var viewPagerAdapter: ViewPagerAdapter
     private var currentPeriod = PeriodsOfTime.DAY
     private lateinit var database: DatabaseHelper
@@ -60,12 +58,6 @@ class MainActivity : AppCompatActivity(), OnChangeOperationClickListener {
 
     //Getting spinner items collection for accounts
     private val accountSpinnerItemListFromDb = mutableListOf<SpinnerItem>()
-
-    init {
-        endOfPeriod = Calendar.getInstance()
-        endOfPeriod.time = Date()
-        endOfPeriod.firstDayOfWeek = Calendar.MONDAY
-    }
 
     @SuppressLint("ResourceAsColor")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -140,9 +132,8 @@ class MainActivity : AppCompatActivity(), OnChangeOperationClickListener {
                     currentPeriod = selectedPeriod
                     viewPagerAdapter.setCurrentPeriod(selectedPeriod)
                     val currentFragment = viewPagerAdapter.getRegisteredFragment(pieChartViewPager.currentItem)
-                    endOfPeriod = currentFragment.currentEndOfPeriod
                     initViewPagerWithTabs()
-                    pieChartViewPager.currentItem = DateUtils.getSutedDateIndexByDateFromList(endOfPeriod, viewPagerAdapter.endOfPeriodList)
+                    pieChartViewPager.currentItem = DateUtils.getSutedDateIndexByDateFromList(currentFragment.currentEndOfPeriod, viewPagerAdapter.endOfPeriodList)
                 }
             }
 
@@ -267,14 +258,15 @@ class MainActivity : AppCompatActivity(), OnChangeOperationClickListener {
     }
 
     fun onNewOperationButtonClick(v: View) {
-        val intent = Intent(this, MoneyCalculatorActivity::class.java).apply {
-            putExtra(IS_OPERATION_INCOME, isIncome)
-            putExtra(IS_MODIFYING_OPERATION, false)
-        }
+        val intent = Intent(this, MoneyCalculatorActivity::class.java)
+
+        val currentEndOfPeriod = viewPagerAdapter.getRegisteredFragment(pieChartViewPager.currentItem).currentEndOfPeriod
 
         val extras = Bundle().apply {
+            putBoolean(IS_OPERATION_INCOME, isIncome)
+            putBoolean(IS_MODIFYING_OPERATION, false)
             putSerializable(USER_ID_KEY, USER_ID)
-            putLong(DATE_KEY, endOfPeriod.timeInMillis)
+            putLong(DATE_KEY, currentEndOfPeriod.timeInMillis)
         }
 
         intent.putExtras(extras)
