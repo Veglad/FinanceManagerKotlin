@@ -208,7 +208,7 @@ class MoneyCalculatorActivity : AppCompatActivity(), IMoneyCalculation,
             putExtras(extras)
         }
 
-        setResult(0, intent)
+        setResult(Activity.RESULT_OK, intent)
     }
 
     override fun onDateSet(view: DatePicker, year: Int, month: Int, dayOfMonth: Int) {

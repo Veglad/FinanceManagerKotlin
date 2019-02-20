@@ -187,7 +187,7 @@ class MainActivity : AppCompatActivity(), OnChangeOperationClickListener {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if(resultCode == Activity.RESULT_CANCELED) return
-        if (data == null || resultCode != 0 || data.extras == null) {
+        if (data == null || resultCode != Activity.RESULT_OK || data.extras == null) {
             Toast.makeText(this, getString(R.string.operation_save_error), Toast.LENGTH_SHORT).show()
             return
         }
