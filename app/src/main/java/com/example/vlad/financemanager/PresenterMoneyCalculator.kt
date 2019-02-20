@@ -59,7 +59,7 @@ class PresenterMoneyCalculator(private val view: IMoneyCalculation) {
         val category = Category()
         category.id = view.categoryId
 
-        if (BigDecimal(view.amount).compareTo(model.zeroBigDecimalValue) == 0) {
+        if (view.amount.isEmpty() || BigDecimal(view.amount).compareTo(model.zeroBigDecimalValue) == 0) {
             view.calculationErrorSignal("Set the amount, please")
             return
         }
