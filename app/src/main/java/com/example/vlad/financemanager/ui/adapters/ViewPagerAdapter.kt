@@ -34,7 +34,8 @@ class ViewPagerAdapter(fragmentManager: FragmentManager,
     //This method is invoked after notifyDataSetChanged method invocation
     override fun getItemPosition(any: Any): Int {
         val fragment = any as TabFragment
-        fragment.fullTabFragmentUpdate(currentPeriod, fragment.currentEndOfPeriod, isIncome, accountId, fragment.dateTitle)
+        fragment.fullTabFragmentUpdate(currentPeriod, fragment.currentEndOfPeriod, isIncome, accountId, fragment.dateTitle, true)
+        fragment.animatePieChart()
 
         return super.getItemPosition(any)
     }

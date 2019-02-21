@@ -7,27 +7,23 @@ import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.DefaultItemAnimator
 import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import android.util.TypedValue
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
+import android.view.animation.AnimationUtils
 import android.widget.ScrollView
 import android.widget.TextView
-import butterknife.BindView
-import butterknife.ButterKnife
-import butterknife.Unbinder
 
 import com.example.vlad.financemanager.R
 import com.example.vlad.financemanager.data.database.DatabaseHelper
 import com.example.vlad.financemanager.data.enums.PeriodsOfTime
 import com.example.vlad.financemanager.data.models.Operation
 import com.example.vlad.financemanager.ui.OnChangeOperationClickListener
-import com.example.vlad.financemanager.ui.OnItemClickListener
-import com.example.vlad.financemanager.ui.OnItemDeleteClickListener
 import com.example.vlad.financemanager.ui.adapters.OperationsAdapter
+import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.charts.Chart
-import com.github.mikephil.charting.charts.PieChart
 import com.github.mikephil.charting.components.Description
 import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
@@ -100,6 +96,8 @@ class TabFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initOperationListAdapter()
+        initBalanceTextSwitcher()
+        pieChart.setUsePercentValues(true)
         val extras = arguments
         extras?.let {
             //Get extras
@@ -110,9 +108,24 @@ class TabFragment : Fragment() {
             dateTitle = it.getString(DATE_TITLE_KEY)
             isIncome = it.getBoolean(IS_INCOME_KEY)
 
-            fullTabFragmentUpdate(currentPeriod, currentEndOfPeriod, isIncome, accountId, dateTitle)
+            fullTabFragmentUpdate(currentPeriod, currentEndOfPeriod, isIncome, accountId, dateTitle, false)
         }
-        pieChart.setUsePercentValues(true)
+    }
+
+    private fun initBalanceTextSwitcher() {
+        val inAnim = AnimationUtils.loadAnimation(context, android.R.anim.slide_in_left).apply { duration = 500 }
+        val outAnim = AnimationUtils.loadAnimation(context, android.R.anim.slide_out_right).apply { duration = 500 }
+        with(balanceTextSwitcher) {
+            inAnimation = inAnim
+            outAnimation = outAnim
+            setFactory {
+                TextView(context).apply {
+                    gravity = Gravity.CENTER
+                    textSize = context.resources.getDimension(R.dimen.balance_text_size)
+                    setTextColor(ContextCompat.getColor(context, R.color.white))
+                }
+            }
+        }
     }
 
     private fun getBalance(operationList: List<Operation>): BigDecimal {
@@ -136,14 +149,18 @@ class TabFragment : Fragment() {
     }
 
     //Full tab fragment update
-    fun fullTabFragmentUpdate(currentPeriod: PeriodsOfTime, endOfPeriod: Calendar, isIncome: Boolean, accountId: Int, dateTitle: String?) {
+    fun fullTabFragmentUpdate(currentPeriod: PeriodsOfTime, endOfPeriod: Calendar, isIncome: Boolean, accountId: Int, dateTitle: String?, animateBalance: Boolean) {
         operationList = database.getOperations(accountId, currentPeriod, endOfPeriod) ?: return
 
         operationList = getOperationsByIsIncome(isIncome, operationList)
         val balance = getBalance(operationList)
         balanceString = getBalanceString(isIncome, balance)
 
-        updateTabFragment(isIncome, dateTitle, balanceString, operationList)
+        updateTabFragment(isIncome, dateTitle, balanceString, operationList, animateBalance)
+    }
+
+    fun animatePieChart() {
+        pieChart.animateY(1000, Easing.EasingOption.EaseOutQuart)
     }
 
     private fun getBalanceString(isIncome: Boolean, balance: BigDecimal): String {
@@ -151,12 +168,16 @@ class TabFragment : Fragment() {
         return String.format(placeholderBalanceString, balance)
     }
 
-    fun updateTabFragment(isIncome: Boolean, dateTitle: String?, balanceString: String?, operationList: List<Operation>) {
+    private fun updateTabFragment(isIncome: Boolean, dateTitle: String?, balanceString: String?, operationList: List<Operation>, animateBalance: Boolean) {
         updateOperationList(operationList)
 
-        pieChart.centerText = balanceString
+        if(animateBalance) {
+            balanceTextSwitcher.setText(balanceString)
+        } else {
+            balanceTextSwitcher.setCurrentText(balanceString)
+        }
         drawPieChart(isIncome, operationList)
-        viewPagerDateTextView.text = dateTitle
+        dateTextView.text = dateTitle
     }
 
     fun scrollToTop() {
@@ -187,8 +208,6 @@ class TabFragment : Fragment() {
             this.data = data
             isRotationEnabled = false
             getPaint(Chart.PAINT_HOLE)
-            setCenterTextSize(18f)
-            setCenterTextColor(ContextCompat.getColor(context!!, R.color.white))
             setHoleColor(ContextCompat.getColor(context!!, R.color.transparent))
             this.description = description
             legend.isEnabled = false
@@ -228,8 +247,14 @@ class TabFragment : Fragment() {
 
     private fun initOperationListAdapter() {
         operationsAdapter = OperationsAdapter(context!!, operationList).apply {
-            setOnItemClickListener {position -> changeOperationClick(position)}
-            setOnItemDeleteClickListener {position -> deleteOperation(position)}
+            setOnItemClickListener {position ->
+                changeOperationClick(position)
+            }
+            setOnItemDeleteClickListener {position ->
+                deleteOperation(position)
+                updateTabFragment(isIncome, dateTitle, balanceString, operationList, true)
+                animatePieChart()
+            }
         }
 
         with(operationsRecyclerView) {
@@ -249,14 +274,15 @@ class TabFragment : Fragment() {
     private fun deleteOperation(position: Int) {
         val operationToRemove = operationList[position]
         database.deleteOperation(operationToRemove)
+        removeOperationFromTheList(position)
 
-        fullTabFragmentUpdate(currentPeriod, currentEndOfPeriod, isIncome, accountId, dateTitle)
+        val balance = getBalance(operationList)
+        balanceString = getBalanceString(isIncome, balance)
     }
 
     private fun removeOperationFromTheList(position: Int) {
         operationList.removeAt(position)
         operationsAdapter.notifyItemRemoved(position)
-        updateTabFragment(isIncome, dateTitle, balanceString, operationList)
     }
 
     private fun updateOperationList(operationList: List<Operation>) {
@@ -267,7 +293,7 @@ class TabFragment : Fragment() {
     fun updateUiViaModifiedOperation(operation: Operation) {
         operationList[modifiedOperationIndex] = operation
         operationsAdapter.notifyItemChanged(modifiedOperationIndex)
-        updateTabFragment(isIncome, dateTitle, balanceString, operationList)
+        updateTabFragment(isIncome, dateTitle, balanceString, operationList, true)
     }
 
     fun updateUiViaNewOperation(operation: Operation) {
@@ -281,6 +307,7 @@ class TabFragment : Fragment() {
 
     fun removeModifiedOperation() {
         removeOperationFromTheList(modifiedOperationIndex)
+        updateTabFragment(isIncome, dateTitle, balanceString, operationList, true)
     }
 
     fun getOperationList(): List<Operation>? {

@@ -22,7 +22,7 @@
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
             android:src="@drawable/ic_navigate_before_white_24_64dp"
-            app:layout_constraintBottom_toTopOf="@+id/viewPagerDateTextView"
+            app:layout_constraintBottom_toTopOf="@+id/dateTextView"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/pieChart" />
 
@@ -34,7 +34,7 @@
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="8dp"
             android:src="@drawable/ic_navigate_next_white_24_64dp"
-            app:layout_constraintBottom_toTopOf="@+id/viewPagerDateTextView"
+            app:layout_constraintBottom_toTopOf="@+id/dateTextView"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/pieChart" />
 
@@ -48,8 +48,17 @@
             app:layout_constraintStart_toEndOf="@id/beforeImageView"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <TextSwitcher
+            android:id="@+id/balanceTextSwitcher"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toTopOf="@+id/dateTextView"
+            app:layout_constraintEnd_toEndOf="@+id/pieChart"
+            app:layout_constraintStart_toStartOf="@+id/pieChart"
+            app:layout_constraintTop_toTopOf="@+id/pieChart" />
+
         <TextView
-            android:id="@+id/viewPagerDateTextView"
+            android:id="@+id/dateTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
@@ -71,7 +80,7 @@
             android:clipToPadding="false"
             android:scrollbars="vertical"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/viewPagerDateTextView"/>
+            app:layout_constraintTop_toBottomOf="@+id/dateTextView"/>
 
     </android.support.constraint.ConstraintLayout>
 </ScrollView>
