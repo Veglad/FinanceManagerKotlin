@@ -7,12 +7,13 @@ import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.DefaultItemAnimator
 import android.support.v7.widget.LinearLayoutManager
-import android.util.TypedValue
+import android.support.v7.widget.RecyclerView
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
+import android.view.animation.LayoutAnimationController
 import android.widget.ScrollView
 import android.widget.TextView
 
@@ -113,16 +114,20 @@ class TabFragment : Fragment() {
     }
 
     private fun initBalanceTextSwitcher() {
-        val inAnim = AnimationUtils.loadAnimation(context, android.R.anim.slide_in_left).apply { duration = 500 }
-        val outAnim = AnimationUtils.loadAnimation(context, android.R.anim.slide_out_right).apply { duration = 500 }
-        with(balanceTextSwitcher) {
-            inAnimation = inAnim
-            outAnimation = outAnim
-            setFactory {
-                TextView(context).apply {
-                    gravity = Gravity.CENTER
-                    textSize = context.resources.getDimension(R.dimen.balance_text_size)
-                    setTextColor(ContextCompat.getColor(context, R.color.white))
+        context?.let {
+            val inAnim = AnimationUtils.loadAnimation(context, android.R.anim.slide_in_left)
+                    .apply { duration =  it.resources.getInteger(R.integer.viewpager_primary_animation_duration).toLong()}
+            val outAnim = AnimationUtils.loadAnimation(context, android.R.anim.slide_out_right)
+                    .apply {  duration =  it.resources.getInteger(R.integer.viewpager_primary_animation_duration).toLong() }
+            with(balanceTextSwitcher) {
+                inAnimation = inAnim
+                outAnimation = outAnim
+                setFactory {
+                    TextView(context).apply {
+                        gravity = Gravity.CENTER
+                        textSize = context.resources.getDimension(R.dimen.balance_text_size)
+                        setTextColor(ContextCompat.getColor(context, R.color.white))
+                    }
                 }
             }
         }
@@ -157,10 +162,13 @@ class TabFragment : Fragment() {
         balanceString = getBalanceString(isIncome, balance)
 
         updateTabFragment(isIncome, dateTitle, balanceString, operationList, animateBalance)
+        runLayoutAnimation(operationsRecyclerView)
     }
 
     fun animatePieChart() {
-        pieChart.animateY(1000, Easing.EasingOption.EaseOutQuart)
+        context?.let {
+            pieChart.animateY(it.resources.getInteger(R.integer.pie_chart_animation_duration), Easing.EasingOption.EaseOutQuart)
+        }
     }
 
     private fun getBalanceString(isIncome: Boolean, balance: BigDecimal): String {
@@ -194,6 +202,7 @@ class TabFragment : Fragment() {
         dataSet.sliceSpace = 3f
 
         val data = PieData(dataSet)
+        data.setValueTextColor(ContextCompat.getColor(context!!, R.color.white))
 
         if (entries.size == 0) {
             entries.add(setEmptyEntry())
@@ -312,5 +321,13 @@ class TabFragment : Fragment() {
 
     fun getOperationList(): List<Operation>? {
         return operationList
+    }
+
+    private fun runLayoutAnimation(recyclerView: RecyclerView) {
+        val context: Context = recyclerView.context
+        val controller: LayoutAnimationController = AnimationUtils.loadLayoutAnimation(context, R.anim.layout_animator_fall_down)
+        recyclerView.layoutAnimation = controller
+        recyclerView.adapter.notifyDataSetChanged()
+        recyclerView.scheduleLayoutAnimation()
     }
 }
