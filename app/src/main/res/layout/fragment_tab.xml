@@ -12,15 +12,7 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:orientation="vertical">
 
-        <View
-            android:id="@+id/view"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:background="@drawable/new_operation_gradient"
-            app:layout_constraintBottom_toBottomOf="@+id/viewPagerDateTextView"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+
 
         <ImageView
             android:id="@+id/beforeImageView"
@@ -43,7 +35,7 @@
             android:layout_marginBottom="8dp"
             android:src="@drawable/ic_navigate_next_white_24_64dp"
             app:layout_constraintBottom_toTopOf="@+id/viewPagerDateTextView"
-            app:layout_constraintEnd_toEndOf="@+id/view"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/pieChart" />
 
         <com.github.mikephil.charting.charts.PieChart

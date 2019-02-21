@@ -5,7 +5,7 @@
     android:id="@+id/mainContentCoordinator"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
+    android:background="@drawable/new_operation_gradient">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/appbar"
@@ -14,7 +14,6 @@
         android:fitsSystemWindows="true"
         app:theme="@style/ThemeOverlay.AppCompat"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        android:background="@color/primary"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
